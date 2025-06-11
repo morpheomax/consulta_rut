@@ -1,7 +1,16 @@
 import streamlit as st
 import pandas as pd
 
-# Título
+
+
+# Cambiar título, ícono, y layout de la página
+st.set_page_config(
+    page_title="Buscador de Categoría por RUT",  # Este es el título del navegador
+    page_icon="🧾",                             # Ícono de la pestaña (puedes usar emoji o URL)
+    layout="centered"                           # También puedes usar 'wide'
+)
+
+# Título visible dentro de la app
 st.title("Buscador de Categoría por RUT")
 
 # Carga del archivo txt en un DataFrame
