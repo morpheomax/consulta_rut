@@ -67,7 +67,8 @@ pip install streamlit pandas openpyxl geopy folium streamlit-folium
 
 ### 4. Preparar Archivo de Datos
 
-- Coloca el archivo `ABC.xlsx` en la raíz del proyecto.
+- **Archivo de ejemplo**: Usa `ABC_ejemplo.xlsx` incluido en el repositorio para probar la aplicación.
+- **Archivo real**: Para datos completos, obtén el archivo `ABC.xlsx` de fuentes oficiales (ej. SII de Chile) y colócalo en la raíz del proyecto.
 - Asegúrate de que contenga las columnas necesarias (ver sección de Estructura de Datos).
 
 ### 5. Ejecutar la Aplicación
@@ -102,9 +103,11 @@ El archivo `ABC.xlsx` debe contener las siguientes columnas principales:
 ```
 consulta_rut/
 ├── app.py                 # Archivo principal de la aplicación
-├── ABC.xlsx               # Archivo de datos (no incluido en repo)
+├── ABC_ejemplo.xlsx       # Archivo de datos de ejemplo
+├── ABC.xlsx               # Archivo de datos real (no incluido en repo)
 ├── README.md              # Este archivo
 ├── requirements.txt       # Dependencias (generar con pip freeze)
+├── .gitignore             # Archivos a ignorar en Git
 ├── .venv/                 # Entorno virtual (no subir a repo)
 └── .git/                  # Control de versiones
 ```
