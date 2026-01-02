@@ -4,8 +4,8 @@ from geopy.geocoders import Nominatim
 import folium
 from streamlit_folium import st_folium
 import time
-
-# Cambiar título, ícono, y layout de la página
+import pickle
+import os
 st.set_page_config(
     page_title="Buscador de Categoría por RUT",
     page_icon="🧾",
@@ -77,13 +77,28 @@ st.markdown("""
 # Título visible dentro de la app
 st.markdown('<h1 class="main-header">Buscador de Categoría por RUT</h1>', unsafe_allow_html=True)
 
-# Carga del archivo Excel en un DataFrame
+# Carga del archivo Excel en un DataFrame con optimización de cache
+@st.cache_data
 def load_data():
+    pickle_file = "ABC.pkl"
+    if os.path.exists(pickle_file):
+        try:
+            with open(pickle_file, 'rb') as f:
+                df = pickle.load(f)
+            return df
+        except:
+            pass  # Si falla, cargar desde Excel
+
     try:
         # Cargar solo las columnas necesarias para optimizar velocidad
         usecols = ["Rut_empresa", "Dv_empresa", "Razon_social", "Tramo_ventas", "Annio_comercial",
                    "Rubro_economico", "Subrubro_economico", "Actividad_economica", "Region", "Provincia", "Comuna", "CAT"]
         df = pd.read_excel("ABC.xlsx", usecols=usecols, dtype=str)
+        # Crear índice para búsquedas más rápidas
+        df.set_index("Rut_empresa", inplace=True)
+        # Guardar como pickle para futuras cargas rápidas
+        with open(pickle_file, 'wb') as f:
+            pickle.dump(df, f)
         return df
     except Exception as e:
         st.error(f"❌ Error al cargar el archivo ABC.xlsx: {e}. Asegúrate de que el archivo no esté abierto en otra aplicación.")
@@ -119,9 +134,8 @@ with tab1:
 
     # Búsqueda
     if rut_input:
-        resultado = df[df["Rut_empresa"] == rut_input]
-        if not resultado.empty:
-            row = resultado.iloc[0]
+        if rut_input in df.index:
+            row = df.loc[rut_input]
             st.success("✅ RUT encontrado")
 
             # Destacar Categoría primero
@@ -132,7 +146,7 @@ with tab1:
 
             with col1:
                 st.markdown('<div class="info-box">', unsafe_allow_html=True)
-                st.write(f"**RUT Empresa:** {row['Rut_empresa']}-{row['Dv_empresa']}")
+                st.write(f"**RUT Empresa:** {row.name}-{row['Dv_empresa']}")
                 st.write(f"**Razón Social:** {row['Razon_social']}")
                 st.write(f"**Tramo Ventas:** {row['Tramo_ventas']}")
                 st.write(f"**Año Comercial:** {row['Annio_comercial']}")
@@ -169,8 +183,10 @@ with tab2:
         if ruts_input:
             # Procesar la lista de RUTs
             ruts_list = [rut.strip() for rut in ruts_input.replace(',', '\n').split('\n') if rut.strip()]
-            resultados = df[df["Rut_empresa"].isin(ruts_list)]
-            if not resultados.empty:
+            # Filtrar RUTs válidos
+            valid_ruts = [rut for rut in ruts_list if rut in df.index]
+            if valid_ruts:
+                resultados = df.loc[valid_ruts].reset_index()
                 st.success(f"✅ Encontrados {len(resultados)} RUTs de {len(ruts_list)} buscados")
                 # Mostrar tabla con scrollbar si es necesario
                 st.dataframe(resultados, width='stretch')
