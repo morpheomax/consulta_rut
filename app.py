@@ -80,7 +80,10 @@ st.markdown('<h1 class="main-header">Buscador de Categoría por RUT</h1>', unsaf
 # Carga del archivo Excel en un DataFrame
 def load_data():
     try:
-        df = pd.read_excel("ABC.xlsx", dtype=str)
+        # Cargar solo las columnas necesarias para optimizar velocidad
+        usecols = ["Rut_empresa", "Dv_empresa", "Razon_social", "Tramo_ventas", "Annio_comercial",
+                   "Rubro_economico", "Subrubro_economico", "Actividad_economica", "Region", "Provincia", "Comuna", "CAT"]
+        df = pd.read_excel("ABC.xlsx", usecols=usecols, dtype=str)
         return df
     except Exception as e:
         st.error(f"❌ Error al cargar el archivo ABC.xlsx: {e}. Asegúrate de que el archivo no esté abierto en otra aplicación.")
@@ -98,7 +101,7 @@ def get_coordinates(provincia, comuna):
     geolocator = Nominatim(user_agent="consulta_rut_app")
     address = f"{comuna}, {provincia}, Chile"
     try:
-        location = geolocator.geocode(address, timeout=10)
+        location = geolocator.geocode(address, timeout=5)  # Reducir timeout a 5 segundos
         if location:
             return location.latitude, location.longitude
         else:
@@ -146,7 +149,8 @@ with tab1:
                 st.markdown('</div>', unsafe_allow_html=True)
 
                 # Mapa
-                lat, lon = get_coordinates(row['Provincia'], row['Comuna'])
+                with st.spinner("📍 Obteniendo ubicación en el mapa..."):
+                    lat, lon = get_coordinates(row['Provincia'], row['Comuna'])
                 if lat and lon:
                     st.subheader("📍 Ubicación en Mapa")
                     m = folium.Map(location=[lat, lon], zoom_start=12)
