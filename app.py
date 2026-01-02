@@ -77,14 +77,13 @@ st.markdown("""
 # Título visible dentro de la app
 st.markdown('<h1 class="main-header">Buscador de Categoría por RUT</h1>', unsafe_allow_html=True)
 
-# Carga del archivo Excel en un DataFrame con optimización de cache
+# Carga del archivo Excel en un DataFrame con optimización de cache usando Parquet
 @st.cache_data
 def load_data():
-    pickle_file = "ABC.pkl"
-    if os.path.exists(pickle_file):
+    parquet_file = "ABC.parquet"
+    if os.path.exists(parquet_file):
         try:
-            with open(pickle_file, 'rb') as f:
-                df = pickle.load(f)
+            df = pd.read_parquet(parquet_file)
             return df
         except:
             pass  # Si falla, cargar desde Excel
@@ -96,9 +95,8 @@ def load_data():
         df = pd.read_excel("ABC.xlsx", usecols=usecols, dtype=str)
         # Crear índice para búsquedas más rápidas
         df.set_index("Rut_empresa", inplace=True)
-        # Guardar como pickle para futuras cargas rápidas
-        with open(pickle_file, 'wb') as f:
-            pickle.dump(df, f)
+        # Guardar como Parquet para futuras cargas rápidas y eficientes
+        df.to_parquet(parquet_file, index=True)
         return df
     except Exception as e:
         st.error(f"❌ Error al cargar el archivo ABC.xlsx: {e}. Asegúrate de que el archivo no esté abierto en otra aplicación.")
