@@ -14,7 +14,8 @@ st.set_page_config(
 )
 
 # Archivo y hoja
-DATA_FILE = Path("ABC_clientes.xlsx")
+BASE_DIR = Path(__file__).resolve().parent
+DATA_FILE = BASE_DIR / "ABC_clientes.xlsx"
 SHEET_NAME = 0  # Usa la primera hoja del Excel. Cambia si necesitas una hoja específica.
 
 DISPLAY_COLUMNS = [

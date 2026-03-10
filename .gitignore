@@ -1,8 +1,7 @@
 # Archivos grandes de datos
 *.xlsx
 *.parquet
-ABC.xlsx
-ABC.parquet
+
 
 # Entorno virtual
 .venv/
