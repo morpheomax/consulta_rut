@@ -1,5 +1,4 @@
 # Archivos grandes de datos
-*.xlsx
 *.parquet
 
 
