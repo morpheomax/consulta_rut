@@ -18,7 +18,7 @@ st.set_page_config(
     initial_sidebar_state="collapsed",
 )
 
-EXCEL_FILE = Path("ABC_clientes.xlsx")  # Reemplazar por el nombre real del archivo
+EXCEL_FILE = Path("./ABC_clientes.xlsx")  # Reemplazar por el nombre real del archivo
 EXCEL_SHEET = "sheet1"  # Reemplazar por el nombre real de la hoja
 
 DISPLAY_COLUMNS = [
