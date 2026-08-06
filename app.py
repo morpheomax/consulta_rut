@@ -1,4 +1,4 @@
-# file: app.py
+import os
 from pathlib import Path
 import re
 import unicodedata
@@ -15,7 +15,8 @@ st.set_page_config(
 
 # Archivo y hoja
 BASE_DIR = Path(__file__).resolve().parent
-DATA_FILE = BASE_DIR / "ABC_clientes.xlsx"
+DATA_FILE_ENV_VAR = "CONSULTA_RUT_DATA_FILE"
+DATA_FILE = Path(os.getenv(DATA_FILE_ENV_VAR, BASE_DIR / "ABC_clientes.xlsx"))
 SHEET_NAME = 0  # Usa la primera hoja del Excel. Cambia si necesitas una hoja específica.
 
 DISPLAY_COLUMNS = [
@@ -112,7 +113,11 @@ def load_data(file_path, sheet_name, file_mtime):
 
 def get_data():
     if not DATA_FILE.exists():
-        raise FileNotFoundError(f"No se encontró el archivo: {DATA_FILE.resolve()}")
+        raise FileNotFoundError(
+            "No se encontró la base de clientes. "
+            f"Ruta esperada: {DATA_FILE.resolve()}. "
+            f"Puedes definir otra ruta con la variable de entorno {DATA_FILE_ENV_VAR}."
+        )
 
     return load_data(str(DATA_FILE), SHEET_NAME, DATA_FILE.stat().st_mtime)
 

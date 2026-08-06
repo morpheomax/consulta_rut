@@ -1,10 +1,29 @@
-# Archivos grandes de datos
+# Datos reales y archivos locales
 *.parquet
+backup/
+.qodo/
 
-
-# Entorno virtual
+# Entornos virtuales
 .venv/
 venv/
+env/
+ENV/
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Streamlit
+.streamlit/
+
+# Variables de entorno
+.env
+.env.*
 
 # Archivos temporales
 *.tmp
@@ -14,6 +33,6 @@ venv/
 .vscode/
 .idea/
 
-# OS
+# Sistema operativo
 .DS_Store
 Thumbs.db
